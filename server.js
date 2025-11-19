@@ -1,31 +1,21 @@
-//
-// server.js
-// Servidor backend de votación en vivo con temporizador + PostgreSQL
-//
+// ==========================================
+// server.js — Servidor votación SEPA + opacidad barra
+// ==========================================
 
-// ==============================
-// 1. IMPORTAR LIBRERÍAS
-// ==============================
 const express = require("express");
 const http = require("http");
 const { Server } = require("socket.io");
-const { pool } = require("./db"); // requiere DATABASE_URL y SSL activo
+const { pool } = require("./db");
+const path = require("path");
 
-// ==============================
-// 2. CREAR SERVIDOR
-// ==============================
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 
-// ==============================
-// 3. SERVIR ARCHIVOS ESTÁTICOS
-// ==============================
-const path = require("path");
 app.use(express.static(path.join(__dirname, "public")));
 
 // ==============================
-// 4. DEFINIR LAS 2 PREGUNTAS (estáticas)
+// PREGUNTAS
 // ==============================
 const questions = [
   {
@@ -43,54 +33,51 @@ const questions = [
 ];
 
 // ==============================
-// 5. ESTADO DE LA VOTACIÓN
+// ESTADO
 // ==============================
-let currentQuestionId = null;   // pregunta activa
-let isOpen = false;             // si la votación está abierta
-let currentSessionId = null;    // id de la sesión en BD
+let currentQuestionId = null;
+let isOpen = false;
+let currentSessionId = null;
+
+// NUEVO → Estado de opacidad de barra
+let barTransparent = false;
 
 // ==============================
-// 6. TEMPORIZADOR (15 minutos)
+// TEMPORIZADOR 15 minutos
 // ==============================
-const TOTAL_TIME = 15 * 60; // 15 minutos en segundos
+const TOTAL_TIME = 15 * 60;
 let timeRemaining = TOTAL_TIME;
 let timerInterval = null;
 
-// iniciar temporizador
 function startTimer() {
-  stopTimer(); // por si acaso
+  stopTimer();
   timeRemaining = TOTAL_TIME;
 
-  timerInterval = setInterval(() => {
+  timerInterval = setInterval(async () => {
     timeRemaining--;
 
-    // mandar tiempo a todos
     io.emit("timer", { timeRemaining });
 
     if (timeRemaining <= 0) {
       stopTimer();
       isOpen = false;
 
-      // Cerrar sesión en BD si existe y emitir estado
-      (async () => {
-        if (currentSessionId) {
-          try {
-            await pool.query(
-              "update sessions set closed_at = now() where id = $1",
-              [currentSessionId]
-            );
-          } catch (e) {
-            console.error("Error cerrando sesión por timeout:", e.message);
-          }
+      if (currentSessionId) {
+        try {
+          await pool.query(
+            "update sessions set closed_at = now() where id = $1",
+            [currentSessionId]
+          );
+        } catch (e) {
+          console.error("Error cerrando sesión por timeout:", e.message);
         }
-        const s = await buildState();
-        io.emit("state", s);
-      })();
+      }
+
+      io.emit("state", await buildState());
     }
   }, 1000);
 }
 
-// detener temporizador
 function stopTimer() {
   if (timerInterval) {
     clearInterval(timerInterval);
@@ -99,7 +86,7 @@ function stopTimer() {
 }
 
 // ==============================
-// 7. FUNCIÓN PARA CONSTRUIR EL ESTADO (lee BD si hay sesión)
+// BUILD STATE
 // ==============================
 async function buildState() {
   const q = questions.find((q) => q.id === currentQuestionId) || null;
@@ -120,7 +107,7 @@ async function buildState() {
       votesA = rows[0]?.votes_a ?? 0;
       votesB = rows[0]?.votes_b ?? 0;
     } catch (e) {
-      console.error("Error leyendo conteo de BD:", e.message);
+      console.error("Error leyendo BD:", e.message);
     }
   }
 
@@ -128,69 +115,58 @@ async function buildState() {
     currentQuestionId,
     isOpen,
     timeRemaining,
+
+    // NUEVO
+    barTransparent,
+
     question: q
       ? { id: q.id, text: q.text, optionA: q.optionA, optionB: q.optionB }
       : null,
+
     votesA,
     votesB,
   };
 }
 
 // ==============================
-// 8. SOCKET.IO
+// SOCKET.IO
 // ==============================
 io.on("connection", async (socket) => {
-  console.log("Cliente conectado:", socket.id);
-
-  // Enviar estado actual y tiempo
   socket.emit("state", await buildState());
   socket.emit("timer", { timeRemaining });
 
-  // ---------------------------
-  // VOTO DEL PÚBLICO
-  // ---------------------------
+  // VOTO
   socket.on("vote", async (data) => {
-    if (!currentQuestionId) return;
-    if (!isOpen) return;
+    if (!currentQuestionId || !isOpen || !currentSessionId) return;
 
     const option = data?.option;
-    const userId = data?.userId; // identificador persistente del navegador
+    const userId = data?.userId;
 
-    // validaciones básicas
-    if (option !== "A" && option !== "B") return;
+    if (!["A", "B"].includes(option)) return;
     if (!userId) return;
-    if (!currentSessionId) return; // solo votamos si hay sesión abierta
 
-    // UPSERT del voto en BD
     try {
       await pool.query(
         `insert into votes (session_id, user_id, option)
          values ($1, $2, $3)
-         on conflict (session_id, user_id) do update
-           set option = excluded.option,
-               voted_at = now()`,
+         on conflict (session_id, user_id)
+         do update set option = excluded.option, voted_at = now()`,
         [currentSessionId, userId, option]
       );
     } catch (e) {
       console.error("Error guardando voto:", e.message);
-      return;
     }
 
     io.emit("state", await buildState());
   });
 
-  // ---------------------------
-  // ADMIN CAMBIA PREGUNTA
-  // ---------------------------
+  // CAMBIAR PREGUNTA
   socket.on("admin:setQuestion", async (data) => {
     const qid = data?.questionId;
-    const exists = questions.some((q) => q.id === qid);
-    if (!exists) return;
+    if (!questions.some((q) => q.id === qid)) return;
 
     currentQuestionId = qid;
     isOpen = false;
-
-    // reiniciar timer y limpiar sesión activa (crearemos otra al abrir)
     stopTimer();
     timeRemaining = TOTAL_TIME;
     currentSessionId = null;
@@ -199,13 +175,10 @@ io.on("connection", async (socket) => {
     io.emit("timer", { timeRemaining });
   });
 
-  // ---------------------------
-  // ADMIN ABRE VOTACIÓN
-  // ---------------------------
+  // ABRIR VOTACIÓN
   socket.on("admin:openVoting", async () => {
     if (!currentQuestionId) return;
 
-    // Crear sesión en BD
     try {
       const { rows } = await pool.query(
         "insert into sessions (question_id) values ($1) returning id",
@@ -214,7 +187,7 @@ io.on("connection", async (socket) => {
       currentSessionId = rows[0].id;
     } catch (e) {
       console.error("Error creando sesión:", e.message);
-      return; // si falla, no abrimos la votación
+      return;
     }
 
     isOpen = true;
@@ -224,9 +197,7 @@ io.on("connection", async (socket) => {
     io.emit("timer", { timeRemaining });
   });
 
-  // ---------------------------
-  // ADMIN CIERRA VOTACIÓN
-  // ---------------------------
+  // CERRAR VOTACIÓN
   socket.on("admin:closeVoting", async () => {
     if (!currentQuestionId) return;
 
@@ -246,10 +217,17 @@ io.on("connection", async (socket) => {
 
     io.emit("state", await buildState());
   });
+
+  // NUEVO → TOGGLE OPACIDAD
+  socket.on("admin:toggleBarOpacity", async () => {
+    barTransparent = !barTransparent;
+    io.emit("barOpacity", { transparent: barTransparent });
+    io.emit("state", await buildState());
+  });
 });
 
 // ==============================
-// 9. ARRANCAR SERVIDOR
+// INICIAR SERVIDOR
 // ==============================
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {

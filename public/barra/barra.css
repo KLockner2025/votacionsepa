@@ -1,12 +1,11 @@
 body {
     margin: 0;
     padding: 0;
-    background: transparent; /* Para usar en OBS */
+    background: transparent;
     font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
     color: #ffffff;
 }
 
-/* Contenedor general de la overlay */
 #container {
     width: 100vw;
     height: 100vh;
@@ -14,10 +13,9 @@ body {
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    justify-content: flex-end; /* Barra y timer hacia la parte baja de la pantalla */
+    justify-content: flex-end;
 }
 
-/* Texto de la pregunta */
 #pregunta {
     font-size: 28px;
     text-align: center;
@@ -25,7 +23,6 @@ body {
     text-shadow: 0 0 6px rgba(0, 0, 0, 0.7);
 }
 
-/* Temporizador central encima de la barra */
 #timer {
     font-size: 40px;
     text-align: center;
@@ -35,14 +32,19 @@ body {
     font-variant-numeric: tabular-nums;
     text-shadow: 0 0 8px rgba(0,0,0,0.8);
     transition: color 0.3s;
+
+    position: absolute;
+    top: -64px;
+    right: 0;
+    font-size: 36px;
+    margin: 0;
+    text-align: right;
 }
 
-/* Último minuto: rojo */
 .danger {
     color: #ff3b3b;
 }
 
-/* Parpadeo del último minuto */
 @keyframes blink {
     0% { opacity: 1; }
     50% { opacity: 0.2; }
@@ -53,10 +55,9 @@ body {
     animation: blink 1s infinite;
 }
 
-/* Contenedor de la barra de porcentajes */
 #barra {
     width: 100%;
-    height: 70px;
+    height: 40px;
     display: flex;
     border-radius: 999px;
     overflow: hidden;
@@ -67,7 +68,6 @@ body {
         0 0 12px rgba(0, 0, 0, 0.8);
 }
 
-/* Segmentos de la barra */
 .segmento {
     height: 100%;
     display: flex;
@@ -79,68 +79,40 @@ body {
     text-shadow: 0 0 4px rgba(0,0,0,0.8);
 }
 
-/* Opción A → rojo puro */
 #A {
-    background: rgb(255, 0, 0); /* rojo */
+    background: rgb(255, 0, 0);
 }
 
-/* Opción B → #0099FF */
 #B {
     background: #0099FF;
 }
 
-/* Línea de información debajo de la barra */
 #info {
-    margin-top: 12px;
+    margin-top: 10px;
     display: flex;
     justify-content: space-between;
     font-size: 18px;
     align-items: center;
 }
 
-/* Textos de opciones y estado */
-#opA, #opB, #status {
-    text-shadow: 0 0 6px rgba(0,0,0,0.8);
-}
-
-/* Un poco de énfasis al estado (abierta/cerrada) */
-#status {
-    font-weight: 600;
-    padding: 4px 10px;
-    border-radius: 999px;
-    background: rgba(0, 0, 0, 0.55);
-    border: 1px solid rgba(255, 255, 255, 0.4);
-}
-/* Bloque compacto centrado y más estrecho */
 #barBlock {
   position: relative;
-  width: 60vw;       /* antes 60vw -> barras más largas */
-  max-width: 1200px; /* permite crecer en pantallas grandes */
-  min-width: 700px;  /* evita que quede corta en pantallas medianas */
+  width: 60vw;
+  max-width: 1200px;
+  min-width: 700px;
   margin: 0 auto 20px;
 }
 
-/* Ocultar pregunta por completo */
 #pregunta { 
     display: none; 
 }
 
-/* Temporizador arriba a la izquierda, encima de la barra */
-#timer {
-  position: absolute;
-  top: -64px;   /* un poco más arriba que la barra (ajusta -40/-56 si quieres) */
-  right: 0;     /* pegado al lado derecho */
-  font-size: 36px;
-  margin: 0;
-  text-align: right;
+/* NUEVO: clases de opacidad */
+
+#container.opacity-normal {
+    background: rgba(0, 0, 0, 0.55);
 }
 
-/* Barra más baja (menos alta) */
-#barra {
-    height: 40px; /* antes 70px */
-}
-
-/* Info más pegada y ajustada al ancho del bloque */
-#info {
-    margin-top: 10px;
+#container.opacity-transparent {
+    background: transparent !important;
 }

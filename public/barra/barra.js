@@ -9,13 +9,17 @@ const segB = document.getElementById("B");
 const opA = document.getElementById("opA");
 const opB = document.getElementById("opB");
 const status = document.getElementById("status");
+const container = document.getElementById("container");
 
-// Cuando llega el estado del servidor
+// Estado inicial opacidad
+container.classList.add("opacity-normal");
+
+// ------------------------------
+// ESTADO GENERAL
+// ------------------------------
 socket.on("state", (state) => {
-
     const q = state.question;
 
-    // Si no hay pregunta activa
     if (!q) {
         pregunta.innerText = "Esperando pregunta...";
         segA.style.width = "50%";
@@ -25,35 +29,35 @@ socket.on("state", (state) => {
         return;
     }
 
-    // Mostrar texto de la pregunta
     pregunta.innerText = q.text;
 
-    // Mostrar opciones
     opA.innerText = q.optionA;
     opB.innerText = q.optionB;
-
-    // Estado de votación
     status.innerText = state.isOpen ? "Votación abierta" : "Votación cerrada";
 
-    // Cálculo porcentajes
     const total = state.votesA + state.votesB;
-
     let pctA = total === 0 ? 50 : (state.votesA / total) * 100;
     let pctB = 100 - pctA;
 
-    // Ajustar barra
     segA.style.width = pctA + "%";
     segB.style.width = pctB + "%";
-
-    // Texto en la barra
     segA.innerText = Math.round(pctA) + "%";
     segB.innerText = Math.round(pctB) + "%";
+
+    // NUEVO: ajustar opacidad según estado global
+    if (state.barTransparent) {
+        container.classList.remove("opacity-normal");
+        container.classList.add("opacity-transparent");
+    } else {
+        container.classList.remove("opacity-transparent");
+        container.classList.add("opacity-normal");
+    }
 });
 
-// ESCUCHAR TEMPORIZADOR
-// ESCUCHAR TEMPORIZADOR
+// ------------------------------
+// TEMPORIZADOR
+// ------------------------------
 socket.on("timer", ({ timeRemaining }) => {
-    // Convertir a mm:ss
     const minutes = Math.floor(timeRemaining / 60);
     const seconds = timeRemaining % 60;
 
@@ -61,17 +65,27 @@ socket.on("timer", ({ timeRemaining }) => {
         minutes.toString().padStart(2, '0') + ":" +
         seconds.toString().padStart(2, '0');
 
-    // Último minuto → rojo + parpadeo
     if (timeRemaining > 0 && timeRemaining <= 60) {
         timer.classList.add("danger");
         timer.classList.add("blink");
     } else if (timeRemaining === 0) {
-        // En 00:00: mantenemos rojo pero sin parpadeo, y nos quedamos así
         timer.classList.add("danger");
         timer.classList.remove("blink");
     } else {
-        // Más de 60s: estilo normal
         timer.classList.remove("danger");
         timer.classList.remove("blink");
+    }
+});
+
+// ------------------------------
+// EVENTO DIRECTO DE OPACIDAD
+// ------------------------------
+socket.on("barOpacity", ({ transparent }) => {
+    if (transparent) {
+        container.classList.remove("opacity-normal");
+        container.classList.add("opacity-transparent");
+    } else {
+        container.classList.remove("opacity-transparent");
+        container.classList.add("opacity-normal");
     }
 });

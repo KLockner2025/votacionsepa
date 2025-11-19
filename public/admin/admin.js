@@ -14,7 +14,11 @@ function closeVoting() {
     socket.emit("admin:closeVoting");
 }
 
-// Escuchar el estado del servidor
+function toggleBar() {
+    socket.emit("admin:toggleBarOpacity");
+}
+
+// ESCUCHAR ESTADO
 socket.on("state", (state) => {
     const q = state.question;
 
@@ -26,5 +30,8 @@ socket.on("state", (state) => {
 
     document.getElementById("resultados").innerText =
         `Votos A: ${state.votesA} | Votos B: ${state.votesB}`;
-});
 
+    // NUEVO → Mostrar estado de barra
+    document.getElementById("estadoBarra").innerText =
+        state.barTransparent ? "Barra: TRANSPARENTE" : "Barra: OPACA";
+});
