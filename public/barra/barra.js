@@ -51,8 +51,8 @@ socket.on("state", (state) => {
 });
 
 // ESCUCHAR TEMPORIZADOR
+// ESCUCHAR TEMPORIZADOR
 socket.on("timer", ({ timeRemaining }) => {
-
     // Convertir a mm:ss
     const minutes = Math.floor(timeRemaining / 60);
     const seconds = timeRemaining % 60;
@@ -62,10 +62,15 @@ socket.on("timer", ({ timeRemaining }) => {
         seconds.toString().padStart(2, '0');
 
     // Último minuto → rojo + parpadeo
-    if (timeRemaining <= 60) {
+    if (timeRemaining > 0 && timeRemaining <= 60) {
         timer.classList.add("danger");
         timer.classList.add("blink");
+    } else if (timeRemaining === 0) {
+        // En 00:00: mantenemos rojo pero sin parpadeo, y nos quedamos así
+        timer.classList.add("danger");
+        timer.classList.remove("blink");
     } else {
+        // Más de 60s: estilo normal
         timer.classList.remove("danger");
         timer.classList.remove("blink");
     }

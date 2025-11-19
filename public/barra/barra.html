@@ -8,17 +8,23 @@
 <body>
 
 <div id="container">
-    <div id="pregunta">Esperando pregunta...</div>
-    <div id="timer">15:00</div>
-    <div id="barra">
-        <div id="A" class="segmento">0%</div>
-        <div id="B" class="segmento">0%</div>
-    </div>
+    <!-- Ocultamos la pregunta (queda por compatibilidad, pero no se mostrará por CSS) -->
+    <div id="pregunta">Elige: ¿Tú qué harías en este caso?</div>
 
-    <div id="info">
-        <span id="opA">Opción A</span>
-        <span id="status">Votación cerrada</span>
-        <span id="opB">Opción B</span>
+    <!-- Bloque compacto de barra + timer -->
+    <div id="barBlock">
+        <div id="timer">15:00</div>
+
+        <div id="barra">
+            <div id="A" class="segmento">0%</div>
+            <div id="B" class="segmento">0%</div>
+        </div>
+
+        <div id="info">
+            <span id="opA">Opción A</span>
+            <span id="status">Votación cerrada</span>
+            <span id="opB">Opción B</span>
+        </div>
     </div>
 </div>
 

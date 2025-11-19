@@ -111,3 +111,36 @@ body {
     background: rgba(0, 0, 0, 0.55);
     border: 1px solid rgba(255, 255, 255, 0.4);
 }
+/* Bloque compacto centrado y más estrecho */
+#barBlock {
+    position: relative;
+    width: 60vw;          /* más estrecho: ~60% del ancho de pantalla */
+    max-width: 900px;     /* tope en pantallas grandes */
+    min-width: 600px;     /* evita que quede demasiado pequeña */
+    margin: 0 auto 20px;  /* centrada horizontal, con margen inferior */
+}
+
+/* Ocultar pregunta por completo */
+#pregunta { 
+    display: none; 
+}
+
+/* Temporizador arriba a la izquierda, encima de la barra */
+#timer {
+    position: absolute;
+    top: -36px;    /* encima del borde superior de la barra */
+    left: 0;
+    font-size: 32px;
+    margin: 0;     /* anulamos márgenes previos */
+    text-align: left;
+}
+
+/* Barra más baja (menos alta) */
+#barra {
+    height: 50px; /* antes 70px */
+}
+
+/* Info más pegada y ajustada al ancho del bloque */
+#info {
+    margin-top: 10px;
+}
