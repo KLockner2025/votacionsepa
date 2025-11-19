@@ -30,15 +30,15 @@ app.use(express.static(path.join(__dirname, "public")));
 const questions = [
   {
     id: 1,
-    text: "¿Con qué opción estás más de acuerdo en el CASO 1?",
-    optionA: "Caso 1 - Opción A",
-    optionB: "Caso 1 - Opción B",
+    text: "Elige: ¿Tú qué harías en este caso?",
+    optionA: "Opción A - Implante inmediato",
+    optionB: "Opción B - Implante diferido",
   },
   {
     id: 2,
-    text: "¿Con qué opción estás más de acuerdo en el CASO 2?",
-    optionA: "Caso 2 - Opción A",
-    optionB: "Caso 2 - Opción B",
+    text: "Elige: ¿Tú qué harías en este caso?",
+    optionA: "Opción A - Implante inmediato",
+    optionB: "Opción B - Implante diferido",
   },
 ];
 
