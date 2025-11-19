@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Panel Admin - Votación SEPA</title>
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+
+    <h1>Panel de Administración</h1>
+
+    <div class="box">
+        <h2>Seleccionar pregunta</h2>
+        <button onclick="setQuestion(1)">Activar CASO 1</button>
+        <button onclick="setQuestion(2)">Activar CASO 2</button>
+    </div>
+
+    <div class="box">
+        <h2>Control de votación</h2>
+        <button class="open" onclick="openVoting()">Abrir votación</button>
+        <button class="close" onclick="closeVoting()">Cerrar votación</button>
+    </div>
+
+    <div class="box">
+        <h2>Estado actual</h2>
+        <p id="estadoPregunta">Pregunta actual: -</p>
+        <p id="estadoVotacion">Votación: -</p>
+        <p id="resultados">Votos A: 0 | Votos B: 0</p>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Barra de Votación</title>
+    <link rel="stylesheet" href="barra.css">
+</head>
+<body>
+
+<div id="container">
+    <div id="pregunta">Esperando pregunta...</div>
+    <div id="timer">15:00</div>
+    <div id="barra">
+        <div id="A" class="segmento">0%</div>
+        <div id="B" class="segmento">0%</div>
+    </div>
+
+    <div id="info">
+        <span id="opA">Opción A</span>
+        <span id="status">Votación cerrada</span>
+        <span id="opB">Opción B</span>
+    </div>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="barra.js"></script>
+</body>
+</html>

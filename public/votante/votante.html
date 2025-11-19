@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Votación en directo</title>
+    <link rel="stylesheet" href="votante.css">
+</head>
+<body>
+
+<div id="contenedor">
+    <header>
+        <h1>Votación en directo</h1>
+        <p class="subtitulo">Puedes cambiar tu voto en cualquier momento mientras la votación esté abierta.</p>
+    </header>
+
+    <main class="tarjeta">
+        <h2 id="pregunta">Esperando pregunta...</h2>
+
+        <div class="botones">
+            <button id="btnA" onclick="votar('A')">Opción A</button>
+            <button id="btnB" onclick="votar('B')">Opción B</button>
+        </div>
+
+        <p id="estado" class="estado">Votación cerrada</p>
+    </main>
+
+    <footer>
+        <p class="nota">Tu voto es anónimo. Solo cuenta tu último voto.</p>
+    </footer>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="votante.js"></script>
+
+</body>
+</html>

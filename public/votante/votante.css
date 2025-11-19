@@ -1,0 +1,145 @@
+/* Fondo general */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+    background: radial-gradient(circle at top, #222 0, #000 55%);
+    color: #ffffff;
+}
+
+/* Contenedor principal centrado */
+#contenedor {
+    min-height: 100vh;
+    box-sizing: border-box;
+    padding: 24px 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Cabecera */
+header h1 {
+    margin: 0;
+    font-size: 26px;
+    text-align: center;
+}
+
+.subtitulo {
+    margin-top: 6px;
+    margin-bottom: 22px;
+    font-size: 14px;
+    text-align: center;
+    color: #cccccc;
+}
+
+/* Tarjeta central */
+.tarjeta {
+    width: 100%;
+    max-width: 480px;
+    background: rgba(10, 10, 10, 0.9);
+    border-radius: 18px;
+    padding: 24px 18px;
+    box-shadow:
+        0 18px 40px rgba(0,0,0,0.8),
+        0 0 12px rgba(0,0,0,0.7);
+    border: 1px solid rgba(255,255,255,0.08);
+}
+
+/* Pregunta */
+.tarjeta h2 {
+    margin-top: 0;
+    margin-bottom: 22px;
+    font-size: 20px;
+    text-align: center;
+    line-height: 1.3;
+}
+
+/* Contenedor de botones */
+.botones {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 18px;
+}
+
+/* Botones principales */
+button {
+    width: 100%;
+    padding: 16px;
+    font-size: 18px;
+    border: none;
+    border-radius: 999px;
+    color: #ffffff;
+    cursor: pointer;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    transition:
+        transform 0.08s ease-out,
+        box-shadow 0.08s ease-out,
+        opacity 0.15s ease-out,
+        background-color 0.15s ease-out;
+}
+
+/* Opción A → rojo puro */
+#btnA {
+    background-color: rgb(255, 0, 0);
+    box-shadow: 0 8px 18px rgba(255, 0, 0, 0.5);
+}
+
+/* Opción B → #0099FF */
+#btnB {
+    background-color: #0099FF;
+    box-shadow: 0 8px 18px rgba(0, 153, 255, 0.5);
+}
+
+/* Efecto hover (solo escritorio) */
+button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 22px rgba(0,0,0,0.7);
+}
+
+/* Efecto al hacer clic */
+button:active {
+    transform: translateY(1px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.7);
+}
+
+/* Estado deshabilitado */
+button:disabled {
+    background-color: #555555;
+    box-shadow: none;
+    cursor: default;
+    opacity: 0.6;
+}
+
+/* Estado de la votación */
+.estado {
+    text-align: center;
+    font-size: 16px;
+    margin: 0;
+    padding: 8px 12px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+/* Pie de página */
+footer {
+    margin-top: 18px;
+    text-align: center;
+}
+
+.nota {
+    font-size: 12px;
+    color: #bbbbbb;
+    margin: 0;
+}
+/* Botón seleccionado (último voto del usuario) */
+button.selected {
+    outline: 3px solid #ffffff;
+    box-shadow:
+        0 0 0 2px rgba(255, 255, 255, 0.4),
+        0 10px 24px rgba(0, 0, 0, 0.9);
+    transform: translateY(-1px);
+}
