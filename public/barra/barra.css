@@ -1,7 +1,7 @@
 body {
     margin: 0;
     padding: 0;
-    background: transparent;
+    background: transparent; /* OBS debe ver a través */
     font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
     color: #ffffff;
 }
@@ -14,6 +14,9 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
+
+    /* SIEMPRE TRANSPARENTE */
+    background: transparent !important;
 }
 
 #pregunta {
@@ -107,12 +110,11 @@ body {
     display: none; 
 }
 
-/* NUEVO: clases de opacidad */
-
-#container.opacity-normal {
-    background: rgba(0, 0, 0, 0.55);
-}
-
-#container.opacity-transparent {
-    background: transparent !important;
+/* 📌 MODO INVISIBLE TOTAL (no se ve NADA) */
+.hidden-mode #barBlock,
+.hidden-mode #timer,
+.hidden-mode #info,
+.hidden-mode #barra,
+.hidden-mode #pregunta {
+    display: none !important;
 }

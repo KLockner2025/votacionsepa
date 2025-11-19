@@ -11,14 +11,18 @@ const opB = document.getElementById("opB");
 const status = document.getElementById("status");
 const container = document.getElementById("container");
 
-// Estado inicial opacidad
-container.classList.add("opacity-normal");
-
 // ------------------------------
 // ESTADO GENERAL
 // ------------------------------
 socket.on("state", (state) => {
     const q = state.question;
+
+    // Mostrar/ocultar contenido entero según toggle
+    if (state.barTransparent) {
+        container.classList.add("hidden-mode");
+    } else {
+        container.classList.remove("hidden-mode");
+    }
 
     if (!q) {
         pregunta.innerText = "Esperando pregunta...";
@@ -43,15 +47,6 @@ socket.on("state", (state) => {
     segB.style.width = pctB + "%";
     segA.innerText = Math.round(pctA) + "%";
     segB.innerText = Math.round(pctB) + "%";
-
-    // NUEVO: ajustar opacidad según estado global
-    if (state.barTransparent) {
-        container.classList.remove("opacity-normal");
-        container.classList.add("opacity-transparent");
-    } else {
-        container.classList.remove("opacity-transparent");
-        container.classList.add("opacity-normal");
-    }
 });
 
 // ------------------------------
@@ -78,14 +73,12 @@ socket.on("timer", ({ timeRemaining }) => {
 });
 
 // ------------------------------
-// EVENTO DIRECTO DE OPACIDAD
+// EVENTO DIRECTO DESDE ADMIN
 // ------------------------------
 socket.on("barOpacity", ({ transparent }) => {
     if (transparent) {
-        container.classList.remove("opacity-normal");
-        container.classList.add("opacity-transparent");
+        container.classList.add("hidden-mode");
     } else {
-        container.classList.remove("opacity-transparent");
-        container.classList.add("opacity-normal");
+        container.classList.remove("hidden-mode");
     }
 });
