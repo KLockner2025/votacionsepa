@@ -114,7 +114,7 @@ body {
 /* Bloque compacto centrado y más estrecho */
 #barBlock {
   position: relative;
-  width: 80vw;       /* antes 60vw -> barras más largas */
+  width: 60vw;       /* antes 60vw -> barras más largas */
   max-width: 1200px; /* permite crecer en pantallas grandes */
   min-width: 700px;  /* evita que quede corta en pantallas medianas */
   margin: 0 auto 20px;
@@ -128,7 +128,7 @@ body {
 /* Temporizador arriba a la izquierda, encima de la barra */
 #timer {
   position: absolute;
-  top: -56px;   /* un poco más arriba que la barra (ajusta -40/-56 si quieres) */
+  top: -64px;   /* un poco más arriba que la barra (ajusta -40/-56 si quieres) */
   right: 0;     /* pegado al lado derecho */
   font-size: 36px;
   margin: 0;
@@ -137,7 +137,7 @@ body {
 
 /* Barra más baja (menos alta) */
 #barra {
-    height: 56px; /* antes 70px */
+    height: 40px; /* antes 70px */
 }
 
 /* Info más pegada y ajustada al ancho del bloque */
