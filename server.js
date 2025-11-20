@@ -1,5 +1,5 @@
 // ==========================================
-// server.js — Servidor votación SEPA + opacidad barra
+// server.js — Servidor votación SEPA + opacidad barra + control manual del temporizador
 // ==========================================
 
 const express = require("express");
@@ -39,8 +39,10 @@ let currentQuestionId = null;
 let isOpen = false;
 let currentSessionId = null;
 
-// NUEVO → Estado de opacidad de barra
 let barTransparent = false;
+
+// NUEVO → Estado del temporizador
+let timerRunning = false;
 
 // ==============================
 // TEMPORIZADOR 15 minutos
@@ -49,17 +51,23 @@ const TOTAL_TIME = 15 * 60;
 let timeRemaining = TOTAL_TIME;
 let timerInterval = null;
 
+// INICIAR TEMPORIZADOR (solo si admin lo ordena)
 function startTimer() {
   stopTimer();
   timeRemaining = TOTAL_TIME;
+  timerRunning = true;
 
   timerInterval = setInterval(async () => {
     timeRemaining--;
 
-    io.emit("timer", { timeRemaining });
+    io.emit("timer", {
+      timeRemaining,
+      timerRunning
+    });
 
     if (timeRemaining <= 0) {
       stopTimer();
+      timerRunning = false;
       isOpen = false;
 
       if (currentSessionId) {
@@ -83,6 +91,7 @@ function stopTimer() {
     clearInterval(timerInterval);
     timerInterval = null;
   }
+  timerRunning = false;
 }
 
 // ==============================
@@ -115,8 +124,7 @@ async function buildState() {
     currentQuestionId,
     isOpen,
     timeRemaining,
-
-    // NUEVO
+    timerRunning,  // NUEVO
     barTransparent,
 
     question: q
@@ -133,7 +141,7 @@ async function buildState() {
 // ==============================
 io.on("connection", async (socket) => {
   socket.emit("state", await buildState());
-  socket.emit("timer", { timeRemaining });
+  socket.emit("timer", { timeRemaining, timerRunning });
 
   // VOTO
   socket.on("vote", async (data) => {
@@ -169,13 +177,14 @@ io.on("connection", async (socket) => {
     isOpen = false;
     stopTimer();
     timeRemaining = TOTAL_TIME;
+    timerRunning = false;
     currentSessionId = null;
 
     io.emit("state", await buildState());
-    io.emit("timer", { timeRemaining });
+    io.emit("timer", { timeRemaining, timerRunning });
   });
 
-  // ABRIR VOTACIÓN
+  // ABRIR VOTACIÓN (SIN INICIAR TEMPORIZADOR)
   socket.on("admin:openVoting", async () => {
     if (!currentQuestionId) return;
 
@@ -191,13 +200,23 @@ io.on("connection", async (socket) => {
     }
 
     isOpen = true;
-    startTimer();
+    stopTimer();
+    timeRemaining = TOTAL_TIME;
+    timerRunning = false;
 
     io.emit("state", await buildState());
-    io.emit("timer", { timeRemaining });
+    io.emit("timer", { timeRemaining, timerRunning });
   });
 
-  // CERRAR VOTACIÓN
+  // NUEVO — ACTIVAR TEMPORIZADOR
+  socket.on("admin:startTimer", async () => {
+    if (!currentQuestionId || !isOpen) return;
+
+    startTimer();
+    io.emit("state", await buildState());
+  });
+
+  // CERRAR VOTACIÓN MANUALMENTE
   socket.on("admin:closeVoting", async () => {
     if (!currentQuestionId) return;
 
@@ -218,7 +237,7 @@ io.on("connection", async (socket) => {
     io.emit("state", await buildState());
   });
 
-  // NUEVO → TOGGLE OPACIDAD
+  // TOGGLE OPACIDAD
   socket.on("admin:toggleBarOpacity", async () => {
     barTransparent = !barTransparent;
     io.emit("barOpacity", { transparent: barTransparent });

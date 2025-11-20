@@ -1,45 +1,120 @@
+/* Fuente moderna */
 body {
-    font-family: Arial, sans-serif;
-    background: #f4f4f4;
+    font-family: 'Inter', Arial, sans-serif;
+    background: #f0f2f5;
+    margin: 0;
+    padding: 0;
+}
+
+/* Contenedor principal */
+main {
+    max-width: 480px;
+    margin: 0 auto;
     padding: 20px;
 }
 
+/* Título general */
 h1 {
     text-align: center;
+    font-size: 26px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: #222;
 }
 
+/* Tarjetas */
 .box {
     background: white;
-    padding: 20px;
-    margin-top: 20px;
-    border-radius: 10px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    padding: 18px 20px;
+    margin-top: 18px;
+    border-radius: 14px;
+    box-shadow: 0px 4px 12px rgba(0,0,0,0.08);
 }
 
+/* Títulos dentro de tarjetas */
+.box h2 {
+    font-size: 20px;
+    margin-top: 0;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #333;
+}
+
+/* Botones generales */
 button {
-    padding: 10px 20px;
-    margin-right: 10px;
+    width: 100%;
+    padding: 14px;
     margin-top: 10px;
-    cursor: pointer;
     border: none;
-    border-radius: 5px;
-    font-size: 15px;
+    border-radius: 12px;
+    font-size: 17px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.15s;
 }
 
+/* Abrir votación */
 .open {
-    background-color: #28a745;
+    background: #28a745;
     color: white;
 }
 
+/* Cerrar votación */
 .close {
-    background-color: #dc3545;
+    background: #dc3545;
     color: white;
 }
 
-button:hover {
-    opacity: 0.8;
+/* Botones normales */
+button:not(.open):not(.close) {
+    background: #007bff;
+    color: white;
 }
 
+/* Hover */
+button:hover {
+    opacity: 0.9;
+}
+
+/* Estado de información */
 p {
-    font-size: 18px;
+    font-size: 17px;
+    margin: 6px 0;
+    color: #444;
+    font-weight: 500;
+}
+
+/* Estado del temporizador (texto se colorea desde admin.js) */
+#estadoTemporizador {
+    font-weight: 700;
+    transition: color 0.3s ease;
+}
+
+/* Línea separadora */
+hr {
+    margin: 16px 0;
+    border: 0;
+    border-top: 1px solid #e3e3e3;
+}
+
+/* Responsive móvil */
+@media (max-width: 480px) {
+    h1 {
+        font-size: 22px;
+    }
+
+    .box {
+        padding: 16px;
+    }
+
+    button {
+        font-size: 16px;
+        padding: 12px;
+    }
+
+    p {
+        font-size: 16px;
+    }
 }

@@ -3,37 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <title>Panel Admin - Votación SEPA</title>
+
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="admin.css">
 </head>
 <body>
 
+<main>
+
     <h1>Panel de Administración</h1>
 
+    <!-- Selección de caso -->
     <div class="box">
-        <h2>Seleccionar pregunta</h2>
+        <h2>📌 Seleccionar caso</h2>
         <button onclick="setQuestion(1)">Activar CASO 1</button>
         <button onclick="setQuestion(2)">Activar CASO 2</button>
     </div>
 
+    <!-- Control de votación -->
     <div class="box">
-        <h2>Control de votación</h2>
+        <h2>🎛 Control de votación</h2>
+
         <button class="open" onclick="openVoting()">Abrir votación</button>
         <button class="close" onclick="closeVoting()">Cerrar votación</button>
 
         <hr>
 
-        <button onclick="toggleBar()">Barra transparente / opaca</button>
+        <button onclick="startTimer()">⏱ Activar temporizador</button>
+        <p id="estadoTemporizador">Temporizador: -</p>
+
+        <hr>
+
+        <button onclick="toggleBar()">Mostrar / Ocultar barra resultados</button>
         <p id="estadoBarra">Barra: -</p>
     </div>
 
+    <!-- Estado -->
     <div class="box">
-        <h2>Estado actual</h2>
+        <h2>📊 Estado actual</h2>
         <p id="estadoPregunta">Pregunta actual: -</p>
         <p id="estadoVotacion">Votación: -</p>
         <p id="resultados">Votos A: 0 | Votos B: 0</p>
     </div>
 
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="admin.js"></script>
+</main>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="admin.js"></script>
+
 </body>
 </html>
