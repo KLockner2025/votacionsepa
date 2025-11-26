@@ -1,7 +1,7 @@
 body {
     margin: 0;
     padding: 0;
-    background: transparent; /* OBS debe ver a través */
+    background: #00ff00 !important; /* Verde chroma */
     font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
     color: #ffffff;
 }
